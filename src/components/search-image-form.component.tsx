@@ -6,16 +6,11 @@ import {Box, Button, Stack} from "@mui/material";
 import {ColorId, Orientation} from "unsplash-js";
 import {getRandomIntInclusive} from "../utils/math";
 import {SearchImageFormProps} from "../types/search-image-form";
+import {pruneObject} from "../utils/various";
 
 const SearchImageForm: React.FC<SearchImageFormProps> = ({unsplashService, onChange}) => {
     const [searchBarValue, setSearchBarValue] = useState("");
     const [searchFilters, setSearchFilters] = useState<Partial<Filters>>({});
-
-    const clear = () => {
-        setSearchBarValue("");
-        setSearchFilters({});
-        onChange(null);
-    }
 
     const getRandomPhoto = (event: React.SyntheticEvent) => {
         event.preventDefault();
@@ -50,9 +45,13 @@ const SearchImageForm: React.FC<SearchImageFormProps> = ({unsplashService, onCha
             maxWidth="620px"
             width="100%"
         >
-            <SearchBar value={searchBarValue} onChange={(x: string) => setSearchBarValue(x)}/>
-            <FilterBar value={searchFilters} onChange={(x: Filters) => setSearchFilters(x)}/>
-
+            <SearchBar value={searchBarValue} onChange={(x: string) => {
+                    setSearchBarValue(x);
+            }}/>
+            <FilterBar value={searchFilters} onChange={(x: Filters) => {
+                    pruneObject(x);
+                    setSearchFilters(x);
+            }}/>
             <Box
                 display="flex"
                 flexDirection="row"
@@ -60,7 +59,11 @@ const SearchImageForm: React.FC<SearchImageFormProps> = ({unsplashService, onCha
                 gap={3}
                 pt={2}
             >
-                <Button type="button" variant="contained" color="error" sx={{width: 130}} onClick={() => clear()}>
+                <Button type="button" variant="contained" color="error" sx={{width: 130}} onClick={() => {
+                    setSearchBarValue("");
+                    setSearchFilters({});
+                    onChange(null);
+                }}>
                     Clear
                 </Button>
                 <Button type="submit" variant="contained" sx={{width: 130}}>
