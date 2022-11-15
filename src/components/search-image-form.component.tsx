@@ -6,20 +6,20 @@ import {Box, Button, Stack} from "@mui/material";
 import {ColorId, Orientation} from "unsplash-js";
 import {getRandomIntInclusive} from "../utils/math";
 import {SearchImageFormProps} from "../types/search-image-form";
-import {pruneObject} from "../utils/various";
+import {pruneObject} from "../utils/common";
 
 const SearchImageForm: React.FC<SearchImageFormProps> = ({unsplashService, onChange}) => {
     const [searchBarValue, setSearchBarValue] = useState("");
-    const [searchFilters, setSearchFilters] = useState<Partial<Filters>>({});
+    const [searchFilters, setSearchFilters] = useState<Filters>({});
 
     const getRandomPhoto = (event: React.SyntheticEvent) => {
         event.preventDefault();
-        unsplashService.getPhotos(1, searchBarValue, searchFilters.color as ColorId, searchFilters.orientation as Orientation).then((response) => {
+        unsplashService.getPhotos(searchBarValue, 1, 1, searchFilters.color as ColorId, searchFilters.orientation as Orientation).then((response) => {
             if (unsplashService.handleError(response) || unsplashService.handleEmptyResponse(response)) {
                 onChange(null);
                 return;
             }
-            unsplashService.getPhotos(getRandomIntInclusive(1, response.response?.total_pages as number), searchBarValue, searchFilters.color as ColorId, searchFilters.orientation as Orientation)
+            unsplashService.getPhotos(searchBarValue, getRandomIntInclusive(1, response.response?.total_pages as number),1,searchFilters.color as ColorId, searchFilters.orientation as Orientation)
                 .then(
                     randomResponse => {
                         if (unsplashService.handleError(randomResponse)) {

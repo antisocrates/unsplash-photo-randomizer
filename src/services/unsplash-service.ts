@@ -28,11 +28,11 @@ class UnsplashService {
         return false;
     }
 
-    public getPhotos = (page: number, query: string, color: ColorId, orientation: Orientation): Promise<ApiResponse<Photos>> => (
+    public getPhotos = (query: string, page: number, perPage: number, color: ColorId, orientation: Orientation): Promise<ApiResponse<Photos>> => (
         this.unsplashApiClient.search.getPhotos({
             query,
             page,
-            perPage: 1,
+            perPage,
             color,
             orientation
         })
